@@ -32,6 +32,9 @@ Bundle 'tpope/vim-repeat'
 Bundle 'thoughtbot/vim-rspec'
 Bundle 'tpope/vim-dispatch'
 Bundle 'slim-template/vim-slim.git'
+Bundle 'ngmy/vim-rubocop'
+Bundle 'neomake/neomake'
+
 " All of your Bundles must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -73,6 +76,7 @@ nnoremap <leader>- :wincmd _<cr>:wincmd \|<cr>
 nnoremap <leader>= :wincmd =<cr>
 
 map <C-n> :NERDTreeToggle<CR>
+map <leader>j i<CR><Esc>
 
 let g:ag_working_path_mode="r"
 
@@ -139,4 +143,8 @@ let g:rspec_command = "Dispatch bin/rspec {spec}"
 
 set langmenu=en_US
 let $LANG = 'en_US'
+let g:vimrubocop_config = '~/.rubocop.yml'
+
+" Run NeoMake on read and write operations
+autocmd! BufReadPost,BufWritePost * Neomake
 
