@@ -34,7 +34,10 @@ Bundle 'tpope/vim-dispatch'
 Bundle 'slim-template/vim-slim.git'
 Bundle 'ngmy/vim-rubocop'
 Bundle 'neomake/neomake'
+Bundle 'kchmck/vim-coffee-script'
 
+" Elixir neomake stuff
+autocmd! BufWritePost * Neomake
 " All of your Bundles must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -123,6 +126,7 @@ nmap k gk
 
 vmap <Leader>b :<C-U>!git blame <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 nmap <leader>p orequire 'pry'; binding.pry<esc>^
+nmap <leader>o orequire IEx; IEx.pry<esc>^
 
 
 " highlight trailing spaces in annoying red
@@ -144,6 +148,30 @@ let g:rspec_command = "Dispatch bin/rspec {spec}"
 set langmenu=en_US
 let $LANG = 'en_US'
 let g:vimrubocop_config = '~/.rubocop.yml'
+
+let g:neomake_elixir_enabled_makers = ['mycredo']
+function NeomakeCredoErrorType(entry)
+    if a:entry.type ==# 'F'      " Refactoring opportunities
+        let type = 'W'
+    elseif a:entry.type ==# 'D'  " Software design suggestions
+        let type = 'I'
+    elseif a:entry.type ==# 'W'  " Warnings
+        let type = 'W'
+    elseif a:entry.type ==# 'R'  " Readability suggestions
+        let type = 'I'
+    elseif a:entry.type ==# 'C'  " Convention violation
+        let type = 'W'
+    else
+        let type = 'M'           " Everything else is a message
+    endif
+    let a:entry.type = type
+endfunction
+let g:neomake_elixir_mycredo_maker = {
+      \ 'exe': 'mix',
+      \ 'args': ['credo', 'list', '%:p', '--format=oneline'],
+      \ 'errorformat': '[%t] %. %f:%l:%c %m,[%t] %. %f:%l %m',
+      \ 'postprocess': function('NeomakeCredoErrorType')
+      \ }
 
 " Run NeoMake on read and write operations
 autocmd! BufReadPost,BufWritePost * Neomake
