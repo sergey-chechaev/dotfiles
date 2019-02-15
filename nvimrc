@@ -35,6 +35,11 @@ Bundle 'slim-template/vim-slim.git'
 Bundle 'ngmy/vim-rubocop'
 Bundle 'neomake/neomake'
 Bundle 'kchmck/vim-coffee-script'
+Bundle 'tpope/vim-fugitive'
+Bundle 'vim-erlang/vim-erlang-runtime'
+Bundle 'neo4j-contrib/cypher-vim-syntax'
+Bundle 'elmcast/elm-vim'
+Bundle 'w0rp/ale'
 
 " Elixir neomake stuff
 autocmd! BufWritePost * Neomake
@@ -59,6 +64,7 @@ set incsearch
 set hlsearch
 set nohlsearch
 set autoread
+" set spell spelllang=en_us
 
 colorscheme jellybeans
 
@@ -66,6 +72,25 @@ colorscheme jellybeans
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
+" Elixir LS instance lives
+let g:ale_linters = {}
+let g:ale_linters.scss = ['stylelint']
+let g:ale_linters.css = ['stylelint']
+let g:ale_linters.elixir = ['elixir-ls', 'credo']
+let g:ale_linters.ruby = ['rubocop', 'ruby', 'solargraph']
+
+let g:ale_fixers = {'*': ['remove_trailing_lines', 'trim_whitespace']}
+let g:ale_fixers.javascript = ['eslint']
+let g:ale_fixers.scss = ['stylelint']
+let g:ale_fixers.css = ['stylelint']
+let g:ale_fixers.elm = ['format']
+let g:ale_fixers.ruby = ['rubocop']
+let g:ale_ruby_rubocop_executable = 'bundle'
+let g:ale_fixers.elixir = ['mix_format']
+
+let g:ale_elixir_elixir_ls_release = '/Users/sergey-chechaev/elixir/elixir-ls/rel'
+let g:ale_sign_column_always = 1
 
 " Splits
 set splitbelow
@@ -89,6 +114,10 @@ hi MatchParen cterm=none ctermbg=black ctermfg=yellow
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_use_caching = 0
 let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
+
+" ERB нажать в инсер моде cntrl+s дальше - или =
+let b:surround_{char2nr('=')} = "<%= \r %>"
+let b:surround_{char2nr('-')} = "<% \r %>"
 
 nnoremap \ :Ag<SPACE>
 
@@ -136,6 +165,8 @@ autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
+"!!!!!!!! возможно тут ошибка
+autocmd BufNewFile,BufRead *.thor set syntax=ruby
 
 " RSpec.vim mappings
 map <Leader>t :call RunCurrentSpecFile()<CR>
@@ -150,7 +181,7 @@ let $LANG = 'en_US'
 let g:vimrubocop_config = '~/.rubocop.yml'
 
 let g:neomake_elixir_enabled_makers = ['mycredo']
-function NeomakeCredoErrorType(entry)
+function! NeomakeCredoErrorType(entry)
     if a:entry.type ==# 'F'      " Refactoring opportunities
         let type = 'W'
     elseif a:entry.type ==# 'D'  " Software design suggestions
@@ -166,6 +197,7 @@ function NeomakeCredoErrorType(entry)
     endif
     let a:entry.type = type
 endfunction
+
 let g:neomake_elixir_mycredo_maker = {
       \ 'exe': 'mix',
       \ 'args': ['credo', 'list', '%:p', '--format=oneline'],
@@ -175,4 +207,5 @@ let g:neomake_elixir_mycredo_maker = {
 
 " Run NeoMake on read and write operations
 autocmd! BufReadPost,BufWritePost * Neomake
+
 
