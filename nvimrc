@@ -40,6 +40,10 @@ Bundle 'vim-erlang/vim-erlang-runtime'
 Bundle 'neo4j-contrib/cypher-vim-syntax'
 Bundle 'elmcast/elm-vim'
 Bundle 'w0rp/ale'
+Bundle 'infoslack/vim-docker'
+Bundle 'tpope/vim-projectionist'
+Bundle 'c-brenn/fuzzy-projectionist.vim'
+Bundle 'dkuku/vim-projectionist-elixir'
 
 " Elixir neomake stuff
 autocmd! BufWritePost * Neomake
@@ -142,6 +146,9 @@ nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up> :echoe "Use k"<CR>
 nnoremap <Down> :echoe "Use j"<CR>
 
+" Puts full path
+nnoremap <leader>f :r !echo %:p<esc>^
+
 set tags=./tags;
 
 nmap 0 ^
@@ -156,7 +163,6 @@ nmap k gk
 vmap <Leader>b :<C-U>!git blame <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 nmap <leader>p orequire 'pry'; binding.pry<esc>^
 nmap <leader>o orequire IEx; IEx.pry<esc>^
-
 
 " highlight trailing spaces in annoying red
 highlight ExtraWhitespace ctermbg=1 guibg=red
@@ -207,5 +213,3 @@ let g:neomake_elixir_mycredo_maker = {
 
 " Run NeoMake on read and write operations
 autocmd! BufReadPost,BufWritePost * Neomake
-
-
